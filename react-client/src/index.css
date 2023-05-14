@@ -1,0 +1,26 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap'); */
+/* @import url('https://fonts/.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="number"],
+input[type="tel"],
+input[type="time"],
+textarea {
+    @apply w-full rounded-2xl border my-1.5 py-2 px-3;
+}
+button{
+    @apply bg-gray-300 mt-0.5;
+}
+textarea{
+    height: 150px;
+}
+#search-places{
+    @apply pl-9;
+}
+  
