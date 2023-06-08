@@ -108,8 +108,9 @@ app.post("/login", async (req, res) => {
         .status(422)
         .json("The user password doesn't match with registered password.");
     }
-  } else {
-    res.json("User not found/registered.");
+  }
+  if (!userDoc) {
+    res.status(404).json("User not found/registered.");
   }
 });
 
@@ -379,7 +380,7 @@ app.get("/bookings", async (req, res) => {
 });
 
 app.listen(4000, () => {
-  console.log("Airbnb project is listening at port 4000");
+  console.log("Airbnb project - port 4000");
 });
 
 // mongo atlas credentials

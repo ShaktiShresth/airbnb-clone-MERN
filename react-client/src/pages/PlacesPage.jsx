@@ -3,16 +3,19 @@ import AccountNav from "../components/AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PlaceImage from "../components/PlaceImage";
+import LoadingBar from 'react-top-loading-bar'
 
 export default function PlacesPage() {
   const [places, setPlaces] = useState([]);
   const [placesPerPage, setPlacesPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [progress, setProgress] = useState(8);
 
   useEffect(() => {
-    axios.get('/user-places').then(({data}) => {
-      setPlaces(data);
-    })
+     axios.get('/user-places').then(({data}) => {
+       setPlaces(data);
+     });
+     setProgress(100);
   }, []);
 
   const numOfTotalPages = Math.ceil(places.length / placesPerPage);
@@ -35,6 +38,11 @@ export default function PlacesPage() {
 
   return (
     <div className="py-4 px-4 lg:px-40">
+        <LoadingBar
+          color='#f11946'
+          progress={progress}
+          onLoaderFinished={() => setProgress(0)}
+          />
         <AccountNav />
         <div className="text-center my-6 mb-2 text-sm md:text-base">
             <Link to={'/account/places/new'} className="bg-primaryColor rounded-full text-white py-2 px-6 inline-flex gap-1 items-center hover:bg-primaryHoverColor">

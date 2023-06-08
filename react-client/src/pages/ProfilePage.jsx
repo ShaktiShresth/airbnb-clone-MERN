@@ -4,10 +4,12 @@ import { Navigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PlacesPage from "./PlacesPage";
 import AccountNav from "../components/AccountNav";
+import Spinner from "../components/Spinner";
 
 export default function ProfilePage() {
   const [redirectHomePage, setRedirectHomePage] = useState(null);
   const {ready, user, setUser} = useContext(UserContext);
+  const [loader, setLoader] = useState(false);
 
   let {subpage} = useParams();
   if(subpage === undefined){
@@ -15,9 +17,13 @@ export default function ProfilePage() {
   }
 
   const logout = async() => {
-    await axios.post('/logout');
-    setRedirectHomePage('/');
-    setUser(null);
+    setLoader(true)
+    setTimeout(async() => {
+      await axios.post('/logout');
+      setRedirectHomePage('/');
+      setUser(null);
+      setLoader(false)
+    }, 500);
   }
 
   if(!ready){
@@ -36,7 +42,7 @@ export default function ProfilePage() {
 
   return (
     <div className="px-4 py-4 lg:px-20 ">
-      <AccountNav />
+      <AccountNav/>
       {
         subpage === "profile" && (
           <div className="py-10 md:py-20 flex flex-col items-center justify-center mx-auto mt-8 bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl">
@@ -46,13 +52,18 @@ export default function ProfilePage() {
             <p className="underline text-sm md:text-base">You are logged in as</p>
             <span className="font-bold text-sm md:text-base">{user.name}</span>
             <p>(<span className="font-bold text-sm md:text-base">{user.email}</span>)</p>
-            <button onClick={logout} className="py-2 w-40 rounded-full bg-primaryColor text-white mt-4 transition delay-100 ease-in hover:bg-black text-sm md:text-base">Logout</button>
+            <button onClick={logout} className="py-2 w-40 rounded-full bg-primaryColor text-white mt-4 transition delay-100 ease-in hover:bg-black text-sm md:text-base">
+              Logout
+            </button>
           </div>
         )
       }
       {
         subpage === "places" && (<PlacesPage />)
       }
+      <div className="flex justify-center">
+        { loader && <Spinner/> }
+      </div>
     </div>
   )
 }

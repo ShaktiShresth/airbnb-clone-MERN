@@ -5,16 +5,19 @@ import PlaceImage from "../components/PlaceImage";
 import { differenceInCalendarDays } from "date-fns";
 import { Link } from "react-router-dom";
 import BookingDates from "../components/BookingDates";
+import LoadingBar from 'react-top-loading-bar'
 
 export default function BookingsPage() {
     const [bookings, setBookings] = useState([]);
     const [bookingsPerPage, setBookingsPerPage] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
+    const [progress, setProgress] = useState(8);
 
     useEffect(()=>{
-        axios.get('./bookings').then(response => {
-            setBookings(response.data);
-        });
+            axios.get('./bookings').then(response => {
+                setBookings(response.data);
+            });
+            setProgress(100);
     }, []);
 
     const numOfTotalPages = Math.ceil(bookings.length / bookingsPerPage);
@@ -37,6 +40,11 @@ export default function BookingsPage() {
 
   return (
     <div className="px-4 pt-4 lg:px-40">
+        <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+        />
         <AccountNav />
         <div className="mt-8 flex flex-col gap-4">
             {

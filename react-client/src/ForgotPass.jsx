@@ -27,7 +27,7 @@ export default function ForgotPass() {
     }
 
   return (
-    <div className='bg-gray-100 flex flex-col justify-around items-center grow'>
+    <div className='flex flex-col justify-around items-center grow'>
       <form onSubmit={submitEmail}>
       <div className='w-96 flex flex-col justify-around gap-4 items-center'>
         <h1 className='text-4xl font-semibold'>Forgot Password</h1>

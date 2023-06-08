@@ -1,18 +1,26 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Footer from "..//components/Footer";
+import LoadingBar from 'react-top-loading-bar';
+import Spinner from '../components/Spinner';
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
   const [placesPerPage, setPlacesPerPage] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [progress, setProgress] = useState(8);
+  const [loader, setLoader] = useState(true);
 
   useEffect(() => {
-    axios.get('/places').then(response => {
-      setPlaces(response.data);
-    });
+    setTimeout(() => {
+      axios.get('/places').then(response => {
+        setPlaces(response.data);
+      });
+      setProgress(100);
+      setLoader(false);
+    }, 400);
   }, []);
 
   //pagination
@@ -35,7 +43,13 @@ export default function IndexPage() {
   }
 
     return (
-      <div className="bg-gray-100 relative">
+      <div className="relative">
+        <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
+     
         <div className="p-4 w-96 m-auto relative">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 absolute left-6 top-8 text-primaryColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -45,6 +59,9 @@ export default function IndexPage() {
                   className="search-places" 
                   type="text" 
                   placeholder="Search..."/>
+        </div>
+        <div className="flex justify-center">
+          {loader && <Spinner/> }
         </div>
         <div className="px-4 py-8 lg:px-20 grid gap-y-8 gap-x-6 grid-cols-2 max-[430px]:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
           {
@@ -89,7 +106,7 @@ export default function IndexPage() {
             })
           }
         </div>
-        {/* pagination area */}
+        {/* pagination area below*/}
         <div className="text-sm md:text-base">
           {
             places.length > 0 &&  numOfTotalPages !== 1 && (
