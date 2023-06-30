@@ -16,7 +16,7 @@ require("dotenv").config();
 const app = express();
 
 const bcryptSalt = bcrypt.genSaltSync(10);
-const jwtSecret = "airbnbclonesecretkey";
+const jwtSecret = process.env.JWT_SECRET_KEY;
 
 app.use(express.json());
 app.set("view engine", "ejs");
@@ -82,35 +82,41 @@ app.post("/register", async (req, res) => {
     });
     res.json(userDoc);
   } catch (error) {
-    res.status(422).json(error);
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
   }
 });
 
 //login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  const userDoc = await User.findOne({ email });
-  if (userDoc) {
-    const passMatch = bcrypt.compareSync(password, userDoc.password);
-    if (passMatch) {
-      jwt.sign(
-        { email: userDoc.email, id: userDoc._id },
-        jwtSecret,
-        {},
-        (err, token) => {
-          console.log(token);
-          if (err) throw err;
-          res.cookie("token", token).json(userDoc);
-        }
-      );
-    } else {
-      res
-        .status(422)
-        .json("The user password doesn't match with registered password.");
+  try {
+    const userDoc = await User.findOne({ email });
+    if (userDoc) {
+      const passMatch = bcrypt.compareSync(password, userDoc.password);
+      if (passMatch) {
+        jwt.sign(
+          { email: userDoc.email, id: userDoc._id },
+          jwtSecret,
+          {},
+          (err, token) => {
+            console.log(token);
+            if (err) throw err;
+            res.cookie("token", token).json(userDoc);
+          }
+        );
+      } else {
+        res
+          .status(422)
+          .json("The user password doesn't match with registered password.");
+      }
     }
-  }
-  if (!userDoc) {
-    res.status(404).json("User not found/registered.");
+    if (!userDoc) {
+      res.status(404).json("User not found/registered.");
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -154,7 +160,8 @@ app.post("/forgot-password", async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
   }
 });
 

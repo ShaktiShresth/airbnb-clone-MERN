@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { Link } from "react-router-dom"
 import { UserContext } from "../UserContext"
+import { toast } from "react-toastify";
 
 export default function Header() {
     const {user} = useContext(UserContext);
@@ -38,7 +39,15 @@ export default function Header() {
                     </div>
                 </div>
 
-                <Link to={user? '/account' : '/login'} className="flex items-center gap-2 border border-gray-200 rounded-full py-2 px-2 hover:shadow-md shadow-gray-300 transition ease-in-out delay-50">
+                <Link onClick={()=>{
+                    {
+                        if(!user){
+                            toast.error("You must login first to use Airbnb.", {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                        }
+                    }
+                }} to={user? '/account' : '/login'} className="flex items-center gap-2 border border-gray-200 rounded-full py-2 px-2 hover:shadow-md shadow-gray-300 transition ease-in-out delay-50">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>

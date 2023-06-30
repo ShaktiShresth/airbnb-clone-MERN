@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "..//components/Footer";
 import LoadingBar from 'react-top-loading-bar';
 import Spinner from '../components/Spinner';
+import { UserContext } from "../UserContext";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
@@ -13,14 +14,21 @@ export default function IndexPage() {
   const [progress, setProgress] = useState(8);
   const [loader, setLoader] = useState(true);
 
+  const {user} = useContext(UserContext);
+  let navigate = useNavigate();
+
   useEffect(() => {
+    if(user){
     setTimeout(() => {
       axios.get('/places').then(response => {
         setPlaces(response.data);
       });
       setProgress(100);
       setLoader(false);
-    }, 400);
+    }, 500)
+  }else{
+    navigate("/login")
+  }
   }, []);
 
   //pagination
