@@ -15,7 +15,7 @@ import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
 import ForgotPass from "./ForgotPass";
 
-axios.defaults.baseURL = "https://airbnb-clone-mern-lemon.vercel.app";
+axios.defaults.baseURL = "http://localhost:4000";
 axios.defaults.withCredentials = true;
 
 function App() {
