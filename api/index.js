@@ -53,7 +53,7 @@ function getUserDataFromReq(req) {
   });
 }
 
-//api check
+//api test
 app.get("/test", (req, res) => {
   res.json("everything looks good till here");
 });
