@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 
 export const UserContext = createContext({});
@@ -9,7 +9,7 @@ export function UserContextProvider({ children }) {
 
   useEffect(() => {
     if (!user) {
-      axios.get("/profile").then(({ data }) => {
+      fetch("/profile").then(({ data }) => {
         setUser(data);
         setReady(true);
       });
