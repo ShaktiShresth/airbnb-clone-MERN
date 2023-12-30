@@ -54,7 +54,7 @@ function getUserDataFromReq(req) {
 }
 
 //api test
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   res.json("everything looks good till here");
 });
 
