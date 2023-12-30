@@ -22,13 +22,10 @@ export default function LoginPage() {
       return;
     }
     try {
-      const { data } = await axios.post(
-        "https://airbnb-clone-mern-lemon.vercel.app/login",
-        {
-          email,
-          password,
-        }
-      );
+      const { data } = await axios.post("/login", {
+        email,
+        password,
+      });
       setUser(data);
       setRedirect(true);
       toast.success("Login successfull !", {
