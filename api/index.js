@@ -31,7 +31,18 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // console.log(process.env.MONGO_DB_URL);
-mongoose.connect(process.env.MONGO_DB_URL);
+mongoose
+  .connect(process.env.MONGO_DB_URL)
+  .then(() => {
+    const PORT = process.env.PORT;
+    console.log("Connected to the database");
+    app.listen(PORT, () => {
+      console.log(`Airbnb project - port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
 function getUserDataFromReq(req) {
   return new Promise((resolve, reject) => {
@@ -42,6 +53,7 @@ function getUserDataFromReq(req) {
   });
 }
 
+//api check
 app.get("/test", (req, res) => {
   res.json("everything looks good till here");
 });
@@ -358,6 +370,7 @@ app.get("/places", async (req, res) => {
   res.json(await Place.find());
 });
 
+//create booking
 app.post("/bookings", async (req, res) => {
   const userData = await getUserDataFromReq(req);
   const { place, checkIn, checkOut, numOfGuests, fullName, phone, price } =
@@ -384,10 +397,6 @@ app.post("/bookings", async (req, res) => {
 app.get("/bookings", async (req, res) => {
   const userData = await getUserDataFromReq(req);
   res.json(await Booking.find({ user: userData.id }).populate("place"));
-});
-
-app.listen(4000, () => {
-  console.log("Airbnb project - port 4000");
 });
 
 // mongo atlas credentials
