@@ -7,12 +7,22 @@ export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
 
+  if (user) {
+    localStorage.setItem("profileData", JSON.stringify(user));
+  }
+
   useEffect(() => {
     if (!user) {
-      fetch("/profile").then(({ data }) => {
-        setUser(data);
-        setReady(true);
-      });
+      fetch("/profile")
+        .then((response) => response.json())
+        .then((data) => {
+          setUser(data);
+          setReady(true);
+        })
+        .catch((error) => {
+          console.error("Error fetching profile:", error);
+          setReady(true);
+        });
     }
   }, []);
 

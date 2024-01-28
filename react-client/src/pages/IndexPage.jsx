@@ -8,7 +8,7 @@ import { UserContext } from "../UserContext";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
-  const [placesPerPage, setPlacesPerPage] = useState(8);
+  const placesPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [progress, setProgress] = useState(8);
@@ -17,8 +17,11 @@ export default function IndexPage() {
   const { user } = useContext(UserContext);
   let navigate = useNavigate();
 
+  const lStorageProfile = localStorage.getItem("profileData");
+  const parsedData = JSON.parse(lStorageProfile);
+
   useEffect(() => {
-    if (user) {
+    if (user || parsedData) {
       setTimeout(() => {
         axios.get("/places").then((response) => {
           setPlaces(response.data);
@@ -110,7 +113,7 @@ export default function IndexPage() {
                           src={
                             "http://localhost:4000/uploads/" + place.photos?.[0]
                           }
-                          alt=""
+                          alt="photo"
                         />
                       )}
                     </div>

@@ -32,7 +32,6 @@ app.use(cors(corsOptions));
 
 const PORT = process.env.PORT;
 
-// console.log(process.env.MONGO_DB_URL);
 mongoose
   .connect(process.env.MONGO_DB_URL)
   .then(() => {
@@ -53,7 +52,7 @@ function getUserDataFromReq(req) {
 
 //api test
 app.get("/", (req, res) => {
-  res.json("everything looks good till here");
+  res.json("Welcome to AirBnb server.");
 });
 
 const errorHandler = (res, message) => {
@@ -110,15 +109,13 @@ app.post("/login", async (req, res) => {
           jwtSecret,
           {},
           (err, token) => {
-            console.log(token);
+            // console.log(token);
             if (err) throw err;
             res.cookie("token", token).json(userDoc);
           }
         );
       } else {
-        res
-          .status(422)
-          .json("The user password doesn't match with registered password.");
+        res.status(422).json("Invalid credentials.");
       }
     }
     if (!userDoc) {
@@ -146,7 +143,7 @@ app.post("/forgot-password", async (req, res) => {
       expiresIn: "5m",
     });
     const link = `http://localhost:4000/reset-password/${oldUser._id}/${token}`;
-    console.log(link);
+    // console.log(link);
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -177,7 +174,6 @@ app.post("/forgot-password", async (req, res) => {
 
 app.get("/reset-password/:id/:token", async (req, res) => {
   const { id, token } = req.params;
-  console.log(req.params);
   const oldUser = await User.findOne({ _id: id });
   if (!oldUser) {
     return res.status(401).json({
@@ -198,7 +194,7 @@ app.get("/reset-password/:id/:token", async (req, res) => {
 app.post("/reset-password/:id/:token", async (req, res) => {
   const { id, token } = req.params;
   const { password, confirm_password } = req.body;
-  // console.log({ password });
+
   const oldUser = await User.findOne({ _id: id });
   if (!oldUser) {
     return res.status(401).json({
@@ -235,14 +231,15 @@ app.post("/reset-password/:id/:token", async (req, res) => {
 //profile
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
+
   if (token) {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
       if (err) throw err;
       const { name, email, _id } = await User.findById(userData.id);
-      res.json({ name, email, _id });
+      res.status(200).json({ name, email, _id });
     });
   } else {
-    res.json(null);
+    res.status(400).json("Couldn't fetch profile.");
   }
 });
 
@@ -251,7 +248,6 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
-// console.log({ __dirname });
 app.post("/upload-by-link", async (req, res) => {
   const { link } = req.body;
   const newName = "photo" + Date.now() + ".jpg";
@@ -400,7 +396,3 @@ app.get("/bookings", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Airbnb project - port ${PORT}`);
 });
-
-// mongo atlas credentials
-// username - shaktisthaaa7
-// pass - wCd6azw6JKTW3v1f
